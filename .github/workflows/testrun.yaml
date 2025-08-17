@@ -5,27 +5,28 @@ on:
     branches: [ "master" ]
 
 permissions:
-  contents: write      # for Pages
+  contents: write
   pages: write
-  id-token: write      # if you deploy to a custom domain
+  id-token: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up JDK 24
         uses: actions/setup-java@v4
         with:
           java-version: '24'
           distribution: 'temurin'
           cache: 'maven'
+
       - name: Run tests
         run: mvn test
 
-      # Upload the generated HTML as a Pages artifact
       - name: Upload Pages Artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v2
         with:
           path: target/cucumber-reports
 
@@ -36,7 +37,7 @@ jobs:
       name: github-pages
     steps:
       - name: Download Pages Artifact
-        uses: actions/download-pages-artifact@v1
+        uses: actions/download-pages-artifact@v2
 
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v2
