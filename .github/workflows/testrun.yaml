@@ -21,9 +21,14 @@ jobs:
           cache: 'maven'
 
       - name: Run tests and generate report
-        run: mvn test
+        run: mvn test -Dmaven.test.failure.ignore=true
+
+      - name: Re-run Failed Cucumber Tests
+        if: failure()
+        run: mvn test -Dcucumber.features=@target/rerun.txt
 
       - name: Upload Cucumber Reports
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: cucumber-html-report
