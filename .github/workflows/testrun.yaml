@@ -21,3 +21,10 @@ jobs:
 
       - name: Run tests and generate report
         run: mvn test
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/cucumber-reports
+          keep_history: false
