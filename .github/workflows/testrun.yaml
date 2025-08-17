@@ -1,8 +1,13 @@
-name: Java CI with Maven
+name: Java CI with Maven & Report Pages
 
 on:
   push:
     branches: [ "master" ]
+
+permissions:
+  contents: write      # for Pages
+  pages: write
+  id-token: write      # if you deploy to a custom domain
 
 jobs:
   build:
@@ -15,11 +20,23 @@ jobs:
           java-version: '24'
           distribution: 'temurin'
           cache: 'maven'
-      - name: Build with Maven
+      - name: Run tests
         run: mvn test
-      - name: Upload Cucumber Reports
-        uses: actions/upload-artifact@v4
+
+      # Upload the generated HTML as a Pages artifact
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v1
         with:
-          name: cucumber-html-report
           path: target/cucumber-reports
-          retention-days: 5
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - name: Download Pages Artifact
+        uses: actions/download-pages-artifact@v1
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v1
